@@ -1,0 +1,68 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Tasty Trek</title>
+    <link rel="stylesheet" href={% static "home/navbar.css" %} /> 
+    <link rel="stylesheet" href={% static "home/sidebar.css" %} />
+    <link rel="stylesheet" href={% static "home/add.css" %} />
+    <link rel="stylesheet" href={% static "home/index.css" %} />
+    <link rel="stylesheet" href={% static "home/list_items.css" %} />
+
+  </head>
+  <body>
+    <div class='navbar'>
+        <img class='logo' src={% static "home/logo.png" %} alt="" />
+        <img class='profile' src={% static "home/profile_image.png" %} alt="" />
+    </div>
+    <hr>
+    <div class="app-content">
+        <div class='sidebar'>
+            <div class="sidebar-options">
+              <a href={% url "user" %} class="sidebar-option">
+                <img src={% static "home/add_icon.png" %} alt="" />
+                <p>Add Items</p>
+            </a>
+            <a href={% url "list-items" %} class="sidebar-option">
+                <img src={% static "home/order_icon.png" %} alt="" />
+                <p>List Items</p>
+            </a>
+            <a href={% url "orders-page" %} class="sidebar-option">
+              <img src={% static "home/order_icon.png" %} alt="" />
+              <p>Orders</p>
+            </a>
+        </div>
+
+        </div>
+
+        <div class='list add flex-col'>
+            <p>All Foods List</p>
+            <div class='list-table'>
+              <div class="list-table-format title">
+                <b>Image</b>
+                <b>Name</b>
+                <b>Category</b>
+                <b>Price</b>
+                <b>Action</b>
+              </div>
+              {% comment %} {list.map((item,index)=>{
+                return ( {% endcomment %}
+                {% for item in items %}
+                  <div class='list-table-format'>
+                    <img src="{{item.item_description}}" alt="" />
+                    <p>{{item.item_name}}</p>
+                    <p>{{item.restaurant}}</p>
+                    <p>₹{{item.item_price}}</p>
+                    <p class='cursor'>x</p>
+                  </div>
+                {% endfor %}
+                {% comment %} )
+              })} {% endcomment %}
+            </div>
+        </div>
+    </div>
+  </body>
+</html>

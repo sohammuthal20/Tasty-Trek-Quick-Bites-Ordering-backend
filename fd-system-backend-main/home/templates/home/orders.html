@@ -1,0 +1,131 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Tasty Trek</title>
+    <link rel="stylesheet" href={% static "home/navbar.css" %} /> 
+    <link rel="stylesheet" href={% static "home/sidebar.css" %} />
+    <link rel="stylesheet" href={% static "home/add.css" %} />
+    <link rel="stylesheet" href={% static "home/index.css" %} />
+    <link rel="stylesheet" href={% static "home/list_items.css" %} />
+    <link rel="stylesheet" href={% static "home/order.css" %} />
+    <script>
+        function getCSRFToken() {
+            var csrfToken = null;
+            
+            var cookies = document.cookie.split(";");
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.startsWith("csrftoken=")) {
+                csrfToken = cookie.substring("csrftoken=".length, cookie.length);
+                break;
+                }
+            }
+            
+            return csrfToken;
+        }
+
+        function onChangeHandle(id){
+            console.log(id)
+            let selectElement = document.getElementById('selected-op'+id);
+            let selectedValue = selectElement.value;
+
+            console.log(selectedValue)
+
+            fetch(`/swiggy/change-status/`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": getCSRFToken(),
+                },
+                body: JSON.stringify({
+                  id: id,
+                  status: selectedValue
+                }),
+              })
+                .then((response) => {
+                  if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                  }
+                  return response.json();
+                })
+                .then((data) => {
+                    console.log(data)
+                })
+                .catch((error) => {
+                  // Handle errors
+                  console.error("There was a problem with the fetch operation:", error);
+                });
+        }
+    </script>
+  </head>
+  <body>
+    <div class='navbar'>
+        <img class='logo' src={% static "home/logo.png" %} alt="" />
+        <img class='profile' src={% static "home/profile_image.png" %} alt="" />
+    </div>
+    <hr>
+    <div class="app-content">
+        <div class='sidebar'>
+            <div class="sidebar-options">
+              <a href={% url "user" %} class="sidebar-option">
+                <img src={% static "home/add_icon.png" %} alt="" />
+                <p>Add Items</p>
+            </a>
+            <a href={% url "list-items" %} class="sidebar-option">
+                <img src={% static "home/order_icon.png" %} alt="" />
+                <p>List Items</p>
+            </a>
+            <a href={% url "orders-page" %} class="sidebar-option">
+              <img src={% static "home/order_icon.png" %} alt="" />
+              <p>Orders</p>
+            </a>
+        </div>
+
+        </div>
+
+        <div class='order add'>
+            <h3>Order Page</h3>
+            <div class="order-list">
+              {% comment %} {orders.map((order, index) => ( {% endcomment %}
+              {% for order in orders %}
+                <div class='order-item'>
+                    <img src={% static "home/parcel_icon.png" %} alt="" />
+                    <div>
+                    <p class='order-item-food'>
+                        {{order.string}}
+                        {% comment %} {order.items.map((item, index) => {
+                        if (index === order.items.length - 1) {
+                            return item.name + " x " + item.quantity
+                        }
+                        else {
+                            return item.name + " x " + item.quantity + ", "
+                        }
+                        })} {% endcomment %}
+                        </p>
+                    {% comment %} <p class='order-item-name'>{order.address.firstName+" "+order.address.lastName}</p>
+                    <div class='order-item-address'>
+                        <p>{order.address.street+","}</p>
+                        <p>{order.address.city+", "+order.address.state+", "+order.address.country+", "+order.address.zipcode}</p>
+                    </div>
+                    <p class='order-item-phone'>{order.address.phone}</p> {% endcomment %}
+                    </div>
+                    <p>Items : {{order.items}}</p>
+                    <p>₹{{order.amount}}</p>
+                    <select onchange="onChangeHandle({{order.id}})" value="{{order.status}}" name="" id="selected-op{{order.id}}">
+                    <option value="Food Processing" {% if order.status == 'Food Processing' %} selected {% endif %}>Food Processing</option>
+                    <option value="Out for delivery" {% if order.status == 'Out for delivery' %} selected {% endif %}>Out for delivery</option>
+                    <option value="Delivered" {% if order.status == 'Delivered' %} selected {% endif %}>Delivered</option>
+                    </select>
+                </div>
+              {% endfor %}
+                
+              {% comment %} ))} {% endcomment %}
+            </div>
+          </div>
+    </div>
+  </body>
+</html>

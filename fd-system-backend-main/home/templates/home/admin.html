@@ -1,0 +1,75 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Tasty Trek</title>
+    <link rel="stylesheet" href={% static "home/navbar.css" %} /> 
+    <link rel="stylesheet" href={% static "home/sidebar.css" %} />
+    <link rel="stylesheet" href={% static "home/add.css" %} />
+    <link rel="stylesheet" href={% static "home/index.css" %} />
+
+
+  </head>
+  <body>
+    <div class='navbar'>
+        <img class='logo' src={% static "home/logo.png" %} alt="" />
+        <img class='profile' src={% static "home/profile_image.png" %} alt="" />
+    </div>
+    <hr>
+    <div class="app-content">
+        <div class='sidebar'>
+            <div class="sidebar-options">
+              <a href={% url "user" %} class="sidebar-option">
+                  <img src={% static "home/add_icon.png" %} alt="" />
+                  <p>Add Items</p>
+              </a>
+              <a href={% url "list-items" %} class="sidebar-option">
+                  <img src={% static "home/order_icon.png" %} alt="" />
+                  <p>List Items</p>
+              </a>
+              <a href={% url "orders-page" %} class="sidebar-option">
+                <img src={% static "home/order_icon.png" %} alt="" />
+                <p>Orders</p>
+              </a>
+            </div>
+          </div>
+
+          <div class='add'>
+            <form class='flex-col' method="post">
+                {% csrf_token %}
+                <div class='add-product-name flex-col'>
+                    <p>Product name</p>
+                    <input name='name' value="{{data.name}}" type="text" placeholder='Type here' required />
+                </div>
+                <div class='add-product-description flex-col'>
+                    <p>Image Link</p>
+                    <textarea name='description' value="{{data.description}}" type="text" rows="1" placeholder='Write content here' required> </textarea>
+                </div>
+                <div class='add-category-price'>
+                    {% comment %} <div class='add-category flex-col'>
+                        <p>Product category</p>
+                        <select name='category'>
+                            <option value="Salad">Salad</option>
+                            <option value="Rolls">Rolls</option>
+                            <option value="Deserts">Deserts</option>
+                            <option value="Sandwich">Sandwich</option>
+                            <option value="Cake">Cake</option>
+                            <option value="Pure Veg">Pure Veg</option>
+                            <option value="Pasta">Pasta</option>
+                            <option value="Noodles">Noodles</option>
+                        </select>
+                    </div> {% endcomment %}
+                    <div class='add-price flex-col'>
+                        <p>Product Price</p>
+                        <input type="Number" name='price' value="{{data.price}}" placeholder='₹25' />
+                    </div>
+                </div>
+                <button type='submit' class='add-btn' >ADD</button>
+            </form>
+        </div>
+    </div>
+  </body>
+</html>
